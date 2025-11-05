@@ -3,103 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laufey Shrine Clock Border</title>
+<title>Laufey Shrine with Corner Clocks</title>
 <style>
     body {
         background-color: #c7e1fc;
         margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        height: 100vh;
         overflow: hidden;
         position: relative;
-        font-family: 'Georgia', serif;
     }
 
-    /* Container for border clocks */
-    .clock-border {
+    /* Corner Images */
+    .corner {
         position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        pointer-events: none; /* Allows clicks through */
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-content: space-between;
-        padding: 2rem;
-        box-sizing: border-box;
-    }
-
-    /* Each clock */
-    .clock {
-        width: 80px;
-        height: 80px;
-        background: radial-gradient(circle at 50% 50%, #c7e1fc 40%, #0d1a3f 100%);
-        border: 4px solid gold;
-        border-radius: 50%;
-        position: relative;
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 0 0 5px #7fbfff inset;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        animation: flicker 5s infinite alternate;
-    }
-
-    /* Clock hands */
-    .hand {
-        position: absolute;
-        background: gold;
-        transform-origin: bottom center;
-        bottom: 40%;
-    }
-
-    .hour {
-        width: 4px;
-        height: 25px;
-    }
-
-    .minute {
-        width: 2px;
-        height: 35px;
-    }
-
-    /* Flicker animation for fancy effect */
-    @keyframes flicker {
-        0% { box-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 5px #7fbfff inset; transform: rotate(0deg); }
-        25% { box-shadow: 0 0 15px rgba(255,215,0,0.8), 0 0 7px #7fbfff inset; transform: rotate(2deg); }
-        50% { box-shadow: 0 0 12px rgba(255,215,0,0.7), 0 0 6px #7fbfff inset; transform: rotate(-2deg); }
-        75% { box-shadow: 0 0 15px rgba(255,215,0,0.8), 0 0 7px #7fbfff inset; transform: rotate(1deg); }
-        100% { box-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 5px #7fbfff inset; transform: rotate(0deg); }
-    }
-
-    /* Center content (optional) */
-    .center-content {
-        position: relative;
+        width: 100px;
+        height: 100px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
         z-index: 10;
-        text-align: center;
-        font-size: 2rem;
-        color: #0d1a3f;
-        text-shadow: 1px 1px 2px gold;
     }
+
+    .top-left { top: 0; left: 0; }
+    .top-right { top: 0; right: 0; }
+    .bottom-left { bottom: 0; left: 0; }
+    .bottom-right { bottom: 0; right: 0; }
+
+    /* Optional: slight rotation for a fancy look */
+    .top-left { transform: rotate(-5deg); }
+    .top-right { transform: rotate(5deg); }
+    .bottom-left { transform: rotate(5deg); }
+    .bottom-right { transform: rotate(-5deg); }
 </style>
 </head>
 <body>
 
-<div class="clock-border">
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-    <div class="clock"><div class="hand hour"></div><div class="hand minute"></div></div>
-</div>
-
-<div class="center-content">
-    Laufey Shrine
-</div>
+<div class="corner top-left" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
+<div class="corner top-right" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
+<div class="corner bottom-left" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
+<div class="corner bottom-right" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
 
 </body>
 </html>
