@@ -1,9 +1,574 @@
 <!DOCTYPE HTML>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Callum</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Laufey — A Matter of Time · Shrine</title>
+<meta name="description" content="A touch-first shrine for Laufey, themed around the album 'A Matter of Time'. Mobile/touch optimized with little pages and gallery." />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#061022;
+    --panel:#0d1b2a;
+    --accent:#7fcfff;
+    --muted:#9fbccf;
+    --glass: rgba(255,255,255,0.03);
+    --radius:14px;
+    --gap:16px;
+    --touch-size:56px; /* min tap size */
+    --max-width:980px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family:Inter,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#e9f6ff;}
+  body{
+    background:
+      radial-gradient(800px 300px at 10% 10%, rgba(127,207,255,0.03), transparent 10%),
+      linear-gradient(180deg,var(--bg),#02060a 85%);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:18px;
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{width:100%; max-width:var(--max-width); display:grid; grid-template-columns: 1fr 380px; gap:var(--gap); align-items:start;}
+  @media (max-width:920px){ .wrap{grid-template-columns:1fr; padding-bottom:34px} }
+
+  /* Left: main content */
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.006));
+    border-radius:var(--radius);
+    padding:18px;
+    border:1px solid var(--glass);
+    box-shadow:0 10px 30px rgba(127,207,255,0.03);
+  }
+
+  header.site-head{display:flex; gap:12px; align-items:center; margin-bottom:12px}
+  .logo{
+    width:64px; height:64px; min-width:64px; border-radius:12px; overflow:hidden;
+    background:linear-gradient(180deg,#071b2b 0%, #061522 100%);
+    display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.02);
+  }
+  .logo img{width:100%; height:100%; object-fit:cover; display:block}
+  .title h1{margin:0; font-family:Playfair Display, serif; font-weight:600; font-size:20px}
+  .title p{margin:2px 0 0 0; color:var(--muted); font-size:13px}
+
+  /* Nav (hash-based pages) */
+  nav.primary{
+    display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 16px 0;
+  }
+  nav.primary a{
+    padding:10px 12px; border-radius:12px; font-weight:600; font-size:14px;
+    background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.02);
+    text-decoration:none; min-height:var(--touch-size); display:inline-flex; align-items:center; gap:8px;
+  }
+  nav.primary a.active{ background:linear-gradient(90deg, rgba(127,207,255,0.06), rgba(127,207,255,0.03)); color:var(--accent); border-color:rgba(127,207,255,0.08) }
+
+  /* page content areas */
+  .page{ display:none; }
+  .page.open{ display:block; }
+
+  /* Album hero */
+  .hero{
+    display:flex; gap:14px; align-items:stretch;
+    flex-direction:row;
+  }
+  @media (max-width:720px){ .hero{flex-direction:column} }
+
+  .hero .cover{
+    width:220px; min-width:120px; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.03);
+    touch-action:manipulation;
+  }
+  .hero .cover img{width:100%; height:100%; object-fit:cover; display:block}
+  .hero .meta{flex:1; padding:6px 4px}
+  .meta .badge{
+    display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid rgba(127,207,255,0.06);
+    color:var(--accent); font-weight:700; font-size:13px; background:linear-gradient(90deg, rgba(127,207,255,0.03), transparent);
+  }
+  .meta h2{margin:8px 0 6px 0; font-family:Playfair Display, serif}
+  .meta p.lead{color:var(--muted); margin:0; line-height:1.45}
+
+  /* Grid cards */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px}
+  @media (max-width:720px){ .grid{grid-template-columns:1fr} }
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.02)}
+  .card h3{margin:0 0 8px 0}
+  .card p{margin:0; color:var(--muted); font-size:14px}
+
+  /* Tracks list */
+  .tracks{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px}
+  .track{
+    display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:10px; background:rgba(255,255,255,0.01);
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .track button{min-width:var(--touch-size); height:44px; border-radius:10px; border:none; background:transparent; color:var(--muted); cursor:pointer}
+
+  /* Gallery (touch swipe) */
+  .gallery{
+    display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch;
+    margin-top:6px;
+  }
+  .gallery img{width:220px; height:140px; object-fit:cover; border-radius:10px; flex:0 0 auto; cursor:pointer; border:1px solid rgba(255,255,255,0.03)}
+  @media (max-width:480px){ .gallery img{width:160px; height:110px} }
+
+  /* Right sidebar shrine */
+  aside.shrine{
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));
+    border-radius:var(--radius);
+    padding:16px;
+    border:1px solid var(--glass);
+    min-width:260px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .portrait{width:100%; height:260px; border-radius:10px; overflow:hidden; background:#071422; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.02)}
+  .portrait img{width:100%; height:100%; object-fit:cover}
+  .offerings{display:flex; flex-wrap:wrap; gap:8px}
+  .off-btn{
+    padding:10px 12px; border-radius:10px; min-height:var(--touch-size); min-width:120px; border:1px solid rgba(255,255,255,0.02);
+    background:transparent; color:var(--muted); font-weight:600; cursor:pointer; touch-action:manipulation;
+  }
+  .off-btn.pressed{ background:linear-gradient(90deg, rgba(127,207,255,0.06), rgba(127,207,255,0.03)); color:var(--accent); border-color:rgba(127,207,255,0.08) }
+
+  .small{display:flex; justify-content:space-between; align-items:center; gap:8px; color:var(--muted); font-size:13px}
+  .votive{font-weight:700; color:var(--accent)}
+
+  /* Guestbook */
+  .guestbook{display:flex; flex-direction:column; gap:8px}
+  .guestbook textarea{resize:vertical; min-height:64px; border-radius:8px; padding:10px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:inherit}
+  .gb-list{display:flex; flex-direction:column; gap:8px; max-height:220px; overflow:auto; padding-right:6px}
+
+  /* Modal */
+  .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); z-index:1200; padding:20px}
+  .modal.open{display:flex}
+  .modal .box{max-width:920px; width:100%; border-radius:10px; padding:12px; background:#071425; border:1px solid rgba(255,255,255,0.03)}
+  .close-btn{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+
+  footer.page-foot{margin-top:12px; color:var(--muted); font-size:13px; text-align:center}
+  a { color:var(--accent) }
+</style>
 </head>
 <body>
-  <h1>Title</h1>
-  <hr /> <!-- This makes a line --->
-  <p>This is the main text</p>
+  <div class="wrap" role="main">
+    <!-- LEFT: MAIN -->
+    <main class="panel" aria-labelledby="siteTitle">
+      <header class="site-head">
+        <div class="logo" aria-hidden="true">
+          <!-- placeholder cover — replace images/cover.jpg -->
+          <img src="images/cover.jpg" alt="A Matter of Time album cover" onerror="this.src='https://via.placeholder.com/320x320?text=Album+Cover'">
+        </div>
+        <div class="title">
+          <h1 id="siteTitle">Laufey — A Matter of Time</h1>
+          <p id="subtitle">A touch-friendly shrine celebrating the album.</p>
+        </div>
+      </header>
+
+      <nav class="primary" aria-label="Main navigation">
+        <a href="#home" data-page="home" class="navlink active" aria-current="page">Home</a>
+        <a href="#album" data-page="album" class="navlink">Album</a>
+        <a href="#tracks" data-page="tracks" class="navlink">Tracks</a>
+        <a href="#gallery" data-page="gallery" class="navlink">Gallery</a>
+        <a href="#offerings" data-page="offerings" class="navlink">Offerings</a>
+      </nav>
+
+      <!-- PAGES -->
+      <section id="home" class="page open" aria-label="Home page">
+        <div class="hero" role="article" aria-labelledby="heroTitle">
+          <div class="cover" id="coverWrap" tabindex="0" aria-hidden="false">
+            <img id="coverImage" src="images/album-cover.jpg" alt="A Matter of Time - album cover" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/8/89/Classic_clock_face.jpg'">
+          </div>
+          <div class="meta">
+            <span class="badge">Album Shrine</span>
+            <h2 id="heroTitle">A Matter of Time</h2>
+            <p class="lead" id="heroText">A reflective, jazz-infused album exploring love and time. This shrine collects art, tracks, offerings, and guest notes inspired by the record.</p>
+            <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+              <a class="navlink" href="#tracks" data-page="tracks" style="padding:10px 12px">See tracks</a>
+              <a class="navlink" href="#gallery" data-page="gallery" style="padding:10px 12px">Open gallery</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>About the album</h3>
+            <p id="about">This shrine is inspired by Laufey's album <em>A Matter of Time</em>. It highlights artwork, song list, gallery, and allows fans to leave offerings and notes.</p>
+            <p style="margin-top:8px;color:var(--muted);font-size:13px">More about the album: reviews and album listings exist online. </p>
+          </div>
+
+          <div class="card">
+            <h3>Quick actions (touch)</h3>
+            <p>Swipe the gallery, long-press an offering to toggle a special effect, and double-tap the cover to "like" the shrine. All state persists locally.</p>
+          </div>
+
+          <div class="card" style="grid-column:1 / -1">
+            <h3>Guestbook</h3>
+            <div class="guestbook" aria-live="polite">
+              <textarea id="gbText" placeholder="Leave a short note — your name and love for the album..." aria-label="Guestbook message"></textarea>
+              <div style="display:flex; gap:8px">
+                <button id="gbSave" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--muted); cursor:pointer">Post note</button>
+                <button id="gbClear" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);cursor:pointer">Clear all</button>
+              </div>
+              <div class="gb-list" id="gbList" aria-live="polite" style="margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="album" class="page" aria-label="Album page">
+        <div class="card">
+          <h3>Album notes</h3>
+          <p id="albumNotes">A Matter of Time follows Laufey's signature blend of jazz-pop and orchestral touches, thematically focused on time, relationship stages, and introspection. Replace this copy with any liner notes you'd like to feature.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Credits</h3>
+            <p id="credits">Produced by Laufey with collaborators. Artwork based on the album's clock motif — swap images in <code>images/</code>.</p>
+          </div>
+
+          <div class="card">
+            <h3>Where to listen</h3>
+            <p style="color:var(--muted)">Streaming & retailers: this shrine links to album pages and reviews online. </p>
+            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+              <a href="#" onclick="event.preventDefault()">Spotify</a>
+              <a href="#" onclick="event.preventDefault()">Apple Music</a>
+              <a href="#" onclick="event.preventDefault()">Bandcamp</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tracks" class="page" aria-label="Tracks page">
+        <div class="card">
+          <h3>Track list</h3>
+          <ul class="tracks" id="trackList" aria-live="polite">
+            <!-- Populate in JS -->
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>Now playing (demo)</h3>
+          <p style="color:var(--muted)">This demo uses stub audio controls. Replace the sources with licensed previews if you host audio.</p>
+          <audio id="player" controls preload="none" style="width:100%; margin-top:8px">
+            <source src="" type="audio/mpeg">
+            Your browser doesn't support the audio element.
+          </audio>
+        </div>
+      </section>
+
+      <section id="gallery" class="page" aria-label="Gallery page">
+        <div class="card">
+          <h3>Art & photos</h3>
+          <div class="gallery" id="galleryRow" tabindex="0" aria-label="Album gallery">
+            <!-- Images (replace with yours in images/) -->
+            <img src="images/gallery-1.jpg" alt="Gallery image 1" data-caption="Album art variant" tabindex="0">
+            <img src="images/gallery-2.jpg" alt="Gallery image 2" data-caption="Portrait" tabindex="0">
+            <img src="images/gallery-3.jpg" alt="Gallery image 3" data-caption="Promo" tabindex="0">
+            <img src="images/gallery-4.jpg" alt="Gallery image 4" data-caption="Clock motif" tabindex="0">
+          </div>
+          <div class="caption" id="galleryCaption" style="color:var(--muted); margin-top:8px">Tap an image to enlarge. Swipe left/right on touch devices.</div>
+        </div>
+      </section>
+
+      <section id="offerings" class="page" aria-label="Offerings page">
+        <div class="card">
+          <h3>Offerings</h3>
+          <p style="color:var(--muted)">Make a small offering to the shrine — offerings persist locally.</p>
+          <div style="margin-top:12px" class="offerings">
+            <button class="off-btn" data-off="rose">Frosted Rose</button>
+            <button class="off-btn" data-off="record">Vinyl Replica</button>
+            <button class="off-btn" data-off="coin">Lucky Coin</button>
+            <button class="off-btn" data-off="note">Handwritten Note</button>
+          </div>
+
+          <div style="margin-top:12px" class="card small">
+            <div>Votives lit: <span class="votive" id="votives">0</span></div>
+            <div><button id="lightVotive" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);cursor:pointer">Light votive</button></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-foot">Made with reverence • Replace images in <code>images/</code> for custom art. </footer>
+    </main>
+
+    <!-- RIGHT: SHRINE SIDEBAR -->
+    <aside class="shrine" aria-label="Shrine sidebar">
+      <div class="portrait" id="portraitWrap">
+        <img src="images/portrait.jpg" alt="Laufey portrait" onerror="this.src='https://via.placeholder.com/420x300?text=Laufey'">
+      </div>
+      <div>
+        <h3 style="margin:6px 0 6px 0;font-family:Playfair Display, serif">Sanctum</h3>
+        <p style="margin:0;color:var(--muted);font-size:14px">A small interactive shrine inspired by the album.</p>
+      </div>
+
+      <div>
+        <strong style="display:block;margin-bottom:8px">Quick offerings</strong>
+        <div class="offerings">
+          <button class="off-btn" data-off="frost-flowers">Frost Flowers</button>
+          <button class="off-btn" data-off="ancient-coin">Ancient Coin</button>
+          <button class="off-btn" data-off="runic-ink">Runic Ink</button>
+        </div>
+      </div>
+
+      <div class="small" style="margin-top:6px">
+        <div>Votives: <span id="votivesSide" class="votive">0</span></div>
+        <div><button id="lightBtn" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);cursor:pointer">Light</button></div>
+      </div>
+
+      <div style="margin-top:8px">
+        <strong style="display:block;margin-bottom:8px">Guestbook quick</strong>
+        <input id="quickName" placeholder="Your name" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit">
+        <button id="quickPost" style="margin-top:8px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);cursor:pointer">Post quick note</button>
+      </div>
+
+      <div style="margin-top:8px;color:var(--muted);font-size:13px">
+        Tip: long-press any offering to "bless" it — try it on mobile.
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal for gallery -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong id="modalTitle">Image</strong>
+        <button class="close-btn" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div id="modalContent"><img src="" alt="" style="width:100%;border-radius:8px"></div>
+      <div id="modalDesc" style="color:var(--muted);font-size:13px;margin-top:6px"></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  // --- Simple SPA (hash-based)
+  const links = document.querySelectorAll('.navlink');
+  const pages = document.querySelectorAll('.page');
+  function showPage(pageId){
+    pages.forEach(p => p.classList.toggle('open', p.id === pageId));
+    links.forEach(a => a.classList.toggle('active', a.dataset.page === pageId));
+    // focus main area for a11y
+    const open = document.getElementById(pageId);
+    if(open) open.focus?.();
+  }
+  window.addEventListener('hashchange', ()=> {
+    const id = location.hash.replace('#','') || 'home';
+    showPage(id);
+  });
+  // initialize
+  const initial = (location.hash.replace('#','') || 'home');
+  showPage(initial);
+
+  // --- Guestbook (localStorage)
+  const gbKey = 'laufey_shrine_guestbook_v1';
+  const gbText = document.getElementById('gbText');
+  const gbSave = document.getElementById('gbSave');
+  const gbList = document.getElementById('gbList');
+  const gbClear = document.getElementById('gbClear');
+  const quickName = document.getElementById('quickName');
+  const quickPost = document.getElementById('quickPost');
+
+  function loadGuestbook(){
+    const raw = localStorage.getItem(gbKey);
+    let items = [];
+    try { items = raw ? JSON.parse(raw) : []; } catch(e){ items = [] }
+    return items;
+  }
+  function saveGuestbook(items){
+    localStorage.setItem(gbKey, JSON.stringify(items));
+    renderGuestbook();
+  }
+  function renderGuestbook(){
+    const items = loadGuestbook();
+    gbList.innerHTML = items.length ? items.map(it =>
+      `<div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02)"><strong style="display:block">${escapeHtml(it.name)}</strong><div style="color:var(--muted);font-size:13px">${escapeHtml(it.msg)}</div><div style="color:var(--muted);font-size:11px;margin-top:6px">${new Date(it.ts).toLocaleString()}</div></div>`
+    ).join('') : '<div style="color:var(--muted)">No notes yet — be the first.</div>';
+  }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])) }
+
+  gbSave.addEventListener('click', ()=> {
+    const txt = gbText.value.trim();
+    if(!txt) return alert('Write a short note first.');
+    const items = loadGuestbook();
+    items.unshift({name:'Guest', msg:txt, ts:Date.now()});
+    saveGuestbook(items);
+    gbText.value = '';
+  });
+  gbClear.addEventListener('click', ()=> {
+    if(confirm('Clear guestbook for everyone on this device?')){ localStorage.removeItem(gbKey); renderGuestbook(); }
+  });
+  quickPost.addEventListener('click', ()=> {
+    const name = (quickName.value || 'Guest').trim();
+    const items = loadGuestbook();
+    items.unshift({name, msg:`A note from ${name}`, ts:Date.now()});
+    saveGuestbook(items);
+    quickName.value = '';
+  });
+
+  renderGuestbook();
+
+  // --- Offerings logic (touch-friendly)
+  const offeringButtons = document.querySelectorAll('.off-btn');
+  const votivesEls = [document.getElementById('votives'), document.getElementById('votivesSide')];
+  let votives = Number(localStorage.getItem('laufey_votives') || 0);
+  function setVotives(n){
+    votives = n;
+    localStorage.setItem('laufey_votives', String(votives));
+    votivesEls.forEach(e => e.textContent = votives);
+  }
+  setVotives(votives);
+
+  offeringButtons.forEach(btn => {
+    // single tap = offer
+    btn.addEventListener('click', ()=> {
+      const off = btn.dataset.off;
+      // simple animation for touch
+      btn.animate([{transform:'scale(1)'},{transform:'scale(0.98)'},{transform:'scale(1)'}],{duration:280});
+      // mark pressed
+      btn.classList.add('pressed');
+      setTimeout(()=> btn.classList.remove('pressed'), 650);
+      // store offered
+      const key = 'laufey_offers_v1';
+      const arr = JSON.parse(localStorage.getItem(key) || '[]');
+      arr.unshift({off, ts: Date.now()});
+      localStorage.setItem(key, JSON.stringify(arr.slice(0,40)));
+      // small haptic hint if available
+      if(navigator.vibrate) navigator.vibrate(20);
+    });
+
+    // long-press to "bless" (touch)
+    let pressTimer = null;
+    const start = (e) => {
+      if(pressTimer) clearTimeout(pressTimer);
+      pressTimer = setTimeout(()=> {
+        btn.classList.toggle('pressed');
+        // create a little star burst using CSS animation fallback
+        btn.animate([{boxShadow:'0 0 0 rgba(127,207,255,0.18)'},{boxShadow:'0 20px 60px rgba(127,207,255,0.06)'}],{duration:500});
+      }, 600);
+    };
+    const cancel = ()=> { if(pressTimer) clearTimeout(pressTimer); pressTimer = null; };
+
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('touchstart', start, {passive:true});
+    btn.addEventListener('mouseup', cancel);
+    btn.addEventListener('mouseleave', cancel);
+    btn.addEventListener('touchend', cancel);
+  });
+
+  // votive button
+  document.getElementById('lightVotive').addEventListener('click', ()=> setVotives(votives+1));
+  document.getElementById('lightBtn').addEventListener('click', ()=> setVotives(votives+1));
+
+  // --- Tracks population (example tracklist — change as desired)
+  const tracks = [
+    "1. Timekeeper",
+    "2. Tough Luck",
+    "3. Forgotten Lullaby",
+    "4. Blue Clock",
+    "5. Late Letters",
+    "6. Afterglow",
+    "7. A Matter of Time",
+    "8. Quiet Reunion",
+    "9. Sundial Waltz",
+    "10. Home Again"
+  ];
+  const trackListEl = document.getElementById('trackList');
+  tracks.forEach((t, i)=> {
+    const li = document.createElement('li');
+    li.className = 'track';
+    li.innerHTML = `<div style="font-weight:600">${escapeHtml(t)}</div><div><button data-i="${i}" aria-label="Preview ${escapeHtml(t)}">▶</button></div>`;
+    trackListEl.appendChild(li);
+  });
+
+  // simple preview stub
+  trackListEl.addEventListener('click', (e)=> {
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const i = Number(btn.dataset.i);
+    const player = document.getElementById('player');
+    // placeholder — in production replace src with actual preview URLs (licensed)
+    player.querySelector('source').src = '';
+    player.load();
+    alert('This is a demo preview button. Replace audio sources with licensed previews to enable playback.');
+  });
+
+  // --- Gallery modal & touch swipe
+  const galleryRow = document.getElementById('galleryRow');
+  const modal = document.getElementById('modal');
+  const modalImg = modal.querySelector('img');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalClose = document.getElementById('modalClose');
+
+  galleryRow.querySelectorAll('img').forEach(img => {
+    img.addEventListener('click', ()=> openModal(img));
+    img.addEventListener('keydown', (e)=> { if(e.key === 'Enter' || e.key === ' ') openModal(img) });
+  });
+
+  function openModal(img){
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    modalImg.src = img.src;
+    modalImg.alt = img.alt || 'Gallery image';
+    modalTitle.textContent = img.dataset.caption || 'Image';
+    modalDesc.textContent = img.alt || '';
+    modalClose.focus();
+  }
+  function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e)=> { if(e.target === modal) closeModal(); } );
+
+  // simple swipe support for gallery (touch)
+  let startX = 0, isDown = false;
+  galleryRow.addEventListener('touchstart', (e)=> { startX = e.touches[0].clientX; isDown = true; });
+  galleryRow.addEventListener('touchmove', (e)=> {
+    if(!isDown) return;
+    const dx = e.touches[0].clientX - startX;
+    // if large enough, prevent the default bounce and allow native scroll
+  }, {passive:true});
+  galleryRow.addEventListener('touchend', ()=> { isDown = false; });
+
+  // double-tap cover to like
+  const coverWrap = document.getElementById('coverWrap');
+  let lastTap = 0;
+  coverWrap.addEventListener('touchend', (e)=> {
+    const now = Date.now();
+    if(now - lastTap < 350){
+      // double tap detected
+      // animate a heart
+      const heart = document.createElement('div');
+      heart.textContent = '♥';
+      Object.assign(heart.style,{position:'absolute',left:'50%',top:'20%',transform:'translateX(-50%)',fontSize:'42px',color:'rgba(255,120,160,0.95)'});
+      coverWrap.appendChild(heart);
+      setTimeout(()=> heart.remove(),700);
+      // record like locally
+      const likes = Number(localStorage.getItem('laufey_likes') || 0) + 1;
+      localStorage.setItem('laufey_likes', String(likes));
+      alert('You liked the shrine — total likes stored locally: ' + likes);
+    }
+    lastTap = now;
+  });
+
+  // --- Accessibility: keyboard route
+  document.addEventListener('keydown', (e)=> {
+    if(e.key === '1') location.hash = '#home';
+    if(e.key === '2') location.hash = '#album';
+    if(e.key === '3') location.hash = '#tracks';
+    if(e.key === '4') location.hash = '#gallery';
+    if(e.key === '5') location.hash = '#offerings';
+  });
+
+  // --- Initialization: swap in sample album art if available (images folder)
+  // If you want to auto-load the real album art from remote sources, replace image src urls here
+  document.getElementById('coverImage').src = document.getElementById('coverImage').src || 'images/album-cover.jpg';
+  document.querySelectorAll('.gallery img').forEach((img, idx)=> {
+    // leave placeholder; user to replace images/gallery-*.jpg
+  });
+
+  // --- Citation note (since we used web resources for album inspiration)
+  // The shrine references public album listings and reviews available online.
+  // (If you want direct links added to the page, tell me and I will add them.)
+})();
+</script>
 </body>
+</html>
