@@ -3,45 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laufey Shrine with Corner Clocks</title>
+<title>Laufey Shrine with Border</title>
 <style>
     body {
-        background-color: #c7e1fc;
         margin: 0;
-        height: 100vh;
-        overflow: hidden;
+        background-color: #c7e1fc;
         position: relative;
+        min-height: 100vh;
+        font-family: 'Georgia', serif;
     }
 
-    /* Corner Images */
-    .corner {
+    /* Border wrapper */
+    .border {
         position: absolute;
-        width: 100px;
-        height: 100px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: 10;
+        top: 0; left: 0; right: 0; bottom: 0;
+        pointer-events: none; /* Allows interaction with content */
+        box-sizing: border-box;
+        padding: 40px; /* Space for the border image */
     }
 
-    .top-left { top: 0; left: 0; }
-    .top-right { top: 0; right: 0; }
-    .bottom-left { bottom: 0; left: 0; }
-    .bottom-right { bottom: 0; right: 0; }
+    /* Border images */
+    .border-top, .border-bottom {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background-image: url('https://i.ibb.co/JWsqt01r');
+        background-repeat: repeat-x;
+        background-size: contain;
+    }
 
-    /* Optional: slight rotation for a fancy look */
-    .top-left { transform: rotate(-5deg); }
-    .top-right { transform: rotate(5deg); }
-    .bottom-left { transform: rotate(5deg); }
-    .bottom-right { transform: rotate(-5deg); }
+    .border-top { top: 0; transform: rotate(0deg); }
+    .border-bottom { bottom: 0; transform: rotate(180deg); }
+
+    .border-left, .border-right {
+        position: absolute;
+        top: 0;
+        width: 40px;
+        height: 100%;
+        background-image: url('https://i.ibb.co/JWsqt01r');
+        background-repeat: repeat-y;
+        background-size: contain;
+    }
+
+    .border-left { left: 0; transform: rotate(-90deg); transform-origin: top left; }
+    .border-right { right: 0; transform: rotate(90deg); transform-origin: top right; }
+
+    /* Optional center content */
+    .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 50px;
+        color: #0d1a3f;
+        font-size: 2rem;
+        text-shadow: 1px 1px 2px gold;
+    }
 </style>
 </head>
 <body>
 
-<div class="corner top-left" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
-<div class="corner top-right" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
-<div class="corner bottom-left" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
-<div class="corner bottom-right" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Clock_icon_01.svg/1200px-Clock_icon_01.svg.png');"></div>
+<div class="border">
+    <div class="border-top"></div>
+    <div class="border-bottom"></div>
+    <div class="border-left"></div>
+    <div class="border-right"></div>
+</div>
+
+<div class="content">
+    Laufey Shrine
+</div>
 
 </body>
 </html>
