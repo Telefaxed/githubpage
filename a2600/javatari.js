@@ -25,7 +25,7 @@ Javatari = {
     AUTO_POWER_ON_DELAY:            1200,                       // -1: no auto Power-ON; >= 0: wait specified milliseconds before Power-ON
     CARTRIDGE_SHOW_RECENT:          true,
     CARTRIDGE_CHANGE_DISABLED:      false,
-    CARTRIDGE_LABEL_COLORS:         "#f00 #000 transparent",                         // Space-separated colors for Label, Background, Border. e.g. "#f00 #000 transparent". Leave "" for defaults
+    CARTRIDGE_LABEL_COLORS:         "#FFF #F00 transparent",                         // Space-separated colors for Label, Background, Border. e.g. "#f00 #000 transparent". Leave "" for defaults
     SCREEN_RESIZE_DISABLED:         false,
     SCREEN_CONSOLE_PANEL_DISABLED:  false,
     SCREEN_ELEMENT_ID:              "javatari-screen",
