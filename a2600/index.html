@@ -25,13 +25,7 @@
       width: 97%;
     }
 
-    .game {
-      display: inline-block;
-      margin: 20px;
-      text-align: center;
-    }
-
-    .game img {
+    img {
       width: 180px;
       height: 240px;
       border: 3px solid #000;
@@ -39,14 +33,14 @@
       margin-bottom: 10px;
     }
 
-    .game a button {
+    a button {
       color: #FFFFFF;
+      background-color: black;
       border: 2px solid #ffcc00;
       padding: 10px 20px;
       font-size: 1.1em;
       font-family: 'MDA', monospace;
       cursor: pointer;
-      transition: all 0.3s ease;
       border-radius: 6px;
     }
   </style>
@@ -54,12 +48,14 @@
 <body>
   <h1>Atari 2600 Games</h1>
   <hr />
-  <div class="game">
-    <img src="cover/pitfallii.png" alt="Pitfall II Cover Art">
-    <a href="/web/a2600/emu.html?ROM=https://telefaxed.github.io/web/a2600/roms/pitfallii.bin"><button>Pitfall! II</button></a>
-  </div>
-  <div class="game">
-    <img src="cover/yars.jpeg" alt="Yars's Revenge Cover Art">
-    <a href="/web/a2600/emu.html?ROM=https://telefaxed.github.io/web/a2600/roms/yars.bin"><button>Yars's Revenge</button></a>
-  </div>
+    <a href="/web/a2600/emu.html?ROM=https://telefaxed.github.io/web/a2600/roms/pitfallii.bin">
+      <button>
+        <img src="cover/pitfallii.png" alt="Pitfall II Cover Art">
+      </button>
+    </a>
+    <a href="/web/a2600/emu.html?ROM=https://telefaxed.github.io/web/a2600/roms/yars.bin">
+      <button>
+        <img src="cover/yars.jpeg" alt="Yars's Revenge Cover Art">
+      </button>
+    </a>
 </body>
