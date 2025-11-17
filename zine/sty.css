@@ -1,7 +1,13 @@
+@font-face {
+  font-family: intv; /* set name */
+  src: url(/web/intellivision.tff); /* url of the font */
+}
+
 body {
   color: #FFF;
   background-color: #CCC;
   padding: 75px;
+  font-family: myFont; /* use font */
   margin: auto;
   background-image: repeating-radial-gradient(circle at 17% 32%, white, black 0.00085px);
   animation: tv-static 5s linear infinite;
