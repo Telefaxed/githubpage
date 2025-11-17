@@ -7,7 +7,6 @@ body {
   color: #FFF;
   background-color: #CCC;
   padding: 75px;
-  font-family: myFont; /* use font */
   margin: auto;
   background-image: repeating-radial-gradient(circle at 17% 32%, white, black 0.00085px);
   animation: tv-static 5s linear infinite;
@@ -25,7 +24,11 @@ body {
 .main {
   background-color: #006;
   padding: 10px;
+  font-family: intv;
 }
 .header {
+  background-color: #008;
+}
+.text {
   background-color: #008;
 }
