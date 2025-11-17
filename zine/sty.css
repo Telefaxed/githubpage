@@ -1,6 +1,6 @@
 @font-face {
   font-family: intv; /* set name */
-  src: url(/web/intellivision.tff); /* url of the font */
+  src: url(/web/intellivision.ttf); /* url of the font */
 }
 
 body {
