@@ -7,24 +7,13 @@ body {
   color: #FFF;
   background-color: #CCC;
   padding: 75px;
-  margin: auto;
-  background-image: repeating-radial-gradient(circle at 17% 32%, white, black 0.00085px);
-  animation: tv-static 5s linear infinite;
 }
 
-@keyframes tv-static {
-  from {
-    background-size: 100% 100%;
-  }
-
-  to {
-    background-size: 200% 200%;
-  }
-}
 .main {
   background-color: #006;
   padding: 10px;
   font-family: intv;
+  border-radius: 10px;
 }
 .header {
   background-color: #008;
