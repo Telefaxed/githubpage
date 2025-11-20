@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talkomatic 2024 - Create and Join Chat Rooms | Online Community Platform with Auto Moderation</title>
+    <meta name="description" content="Discover Talkomatic 2024, the advanced platform for creating and joining chat rooms with real-time communication and auto moderation. Connect with friends and new communities seamlessly.">
+    <meta name="keywords" content="Talkomatic 2024, chat rooms, online communication, social platform, join rooms, create rooms, community, real-time chat, auto moderation, online chat">
+    <meta name="author" content="Talkomatic">
+    
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Talkomatic 2024 - Create and Join Chat Rooms">
+    <meta property="og:description" content="Join Talkomatic 2024 to create and join chat rooms, connect with friends, and discover new communities in real-time with advanced auto moderation.">
+    <meta property="og:image" content="https://talkomatic.co/images/v2.2.0.0.png">
+    <meta property="og:url" content="https://www.talkomatic.co">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Talkomatic 2024 - Create and Join Chat Rooms">
+    <meta name="twitter:description" content="Join Talkomatic 2024 to create and join chat rooms, connect with friends, and discover new communities in real-time with advanced auto moderation.">
+    <meta name="twitter:image" content="https://talkomatic.co/images/v2.2.0.0.png">
+
+    <link rel="canonical" href="https://www.talkomatic.co">
+    <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/custom-toastr.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" integrity="sha512-6S2HWzVFxruDlZxI3sXOZZ4/eJ8AcxkQH1+JjSe/ONCEqR9L4Ysq5JdT5ipqtzU7WHalNwzwBv+iE51gNHJNqQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/offensiveWords.js"></script>
+    <script src="js/client.js"></script>
+    <script src="js/amount.js"></script>
+    <script src="service-worker.js"></script>
+    <link rel="manifest" href="manifest.json">
+
+    <!-- IOS SUPPORT -->
+
+    <link rel="apple-touch-icon" href="images/icons/icon-96x96.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#616161">
+
+    <!-- Structured Data for Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": "Talkomatic 2024",
+      "url": "https://www.talkomatic.co",
+      "description": "Talkomatic 2024 is the original platform for creating and joining chat rooms with advanced auto moderation.",
+      "author": {
+        "@type": "Organization",
+        "name": "Talkomatic"
+      }
+    }
+    </script>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "opacity": 1,
+            "autoDismiss": true
+        };
+    </script>
+</head>
+<body>
+    <div class="flex flex-col md:flex-row">
+        <!-- Left Column -->
+        <div class="left-column custom-bg md:w-383 md:max-h-screen overflow-y-auto">
+            <div class="navbar-mobile">
+                <div class="nav-links">
+                    <a href="/">Lobby</a>
+                    <a href="html/coming-soon.html">Profiles</a>
+                    <a href="html/coming-soon.html">Forum</a>
+                </div>
+                <button class="logout-btn" onclick="signOut()">Log Out</button>
+
+            </div>
+            <div class="p-2 flex flex-col items-center">
+                <div class="header-text mt-1 mb-4">
+                    <span class="custom-orange">Tal<span class="italic-k">k</span>omatic<sup>™</sup></span><span class="custom-white"> Lobby</span>
+                </div>
+                <a href="html/about.html" class="custom-link mt-2 hover:custom-link-hover">About Talkomatic<sup>™</sup></a>
+                <a href="html/patch-notes.html" class="custom-link mt-2 hover:custom-link-hover">Patch Notes v2.3.0.0</a>
+            </div>        
+            <div class="full-width-banner mt=2">
+                <span class="banner-text">Be Known As...</span>
+            </div>
+            <div class="info-box mt-2 p-3 border-orange">
+                <div class="info-item">
+                    <label for="name">Your name:</label>
+                    <input type="text" id="name" name="name" placeholder="Username" maxlength="10">
+                </div>
+                <div class="info-item">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" placeholder="Earth" maxlength="10">
+                </div>
+                <button class="button-style" onclick="updateUsername()">
+                    Change <img src="images/icons/interwindarrows.png" alt="Change" class="button-icon">
+                </button>
+
+            </div>
+            <div class="full-width-banner mt-2">
+                <span class="banner-text">Create a room...</span>
+            </div>
+            <div class="room-creation mt-2">
+                <input type="text" id="roomName" name="roomName" placeholder="Room name" class="room-name-input" maxlength="20">
+                <label class="radio-container">
+                    <input type="radio" name="roomType" value="public" checked>
+                    <img src="images/icons/handshake.png" alt="Public" class="radio-icon">
+                    Public 
+                    <span class="radio-checkmark"></span>
+                </label>
+                <label class="radio-container">
+                    <input type="radio" name="roomType" value="private">
+                    <img src="images/icons/private.png" alt="Private" class="radio-icon">
+                    Private 
+                    <span class="radio-checkmark"></span>
+                </label>
+                <label class="radio-container">
+                    <input type="radio" name="roomType" value="secret">
+                    <img src="images/icons/key.png" alt="Secret" class="radio-icon">
+                    Secret
+                    <span class="radio-checkmark"></span>
+                </label>
+                <a href="html/rooms.html" class="join-private-link">How to use private rooms</a>
+                <button id="createRoomBtn" class="join-room-button">
+                    Create Room
+                    <img src="images/icons/chatbubble.png" alt="Chat" class="button-icon">
+                </button>
+                <div class="p-2 text-gray-500 text-sm w-full bottom-left social-color">
+                    <p>Connect with us on our official socials:</p>
+                    <div class="social-media">
+                        <a href="https://www.reddit.com/r/talkomatic/" target="_blank">
+                            <img src="images/socials/reddit.png" alt="Reddit" class="social-icon"> Reddit
+                        </a>
+                        <a href="https://www.instagram.com/talkomaticofficial/" target="_blank">
+                            <img src="images/socials/instagram.png" alt="Instagram" class="social-icon"> Instagram
+                        </a>
+                        <a href="https://twitter.com/talkomatic_co" target="_blank">
+                            <img src="images/socials/x.png" alt="Twitter" class="social-icon"> Twitter/X
+                        </a>
+                        <a href="https://discord.gg/AY7Bk6zgze" target="_blank">
+                            <img src="images/socials/discord.png" alt="Discord" class="social-icon"> Discord
+                        </a>
+                    </div>
+                    <p class="mt-2 test">Contribute to Talkomatic / See Server Status:</p>
+                    <div class="social-media">
+                        <a href="https://github.com/MohdYahyaMahmodi/talkomatic" target="_blank">
+                            <img src="images/socials/github.png" alt="GitHub" class="social-icon"> GitHub
+                        </a>
+                        <a href="https://stats.uptimerobot.com/ozlPwulO4K/797198715" target="_blank">
+                            <img src="images/socials/status.png" alt="Instagram" class="social-icon"> Server Status
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right Column -->
+
+        <div id="roomListContainer" class="right-column bg-black md:flex-1 md:max-h-screen overflow-y-auto">
+            <div class="navbar">
+                <div class="nav-links">
+                    <a href="/">Lobby</a>
+                    <a href="html/coming-soon.html">Profiles</a>
+                    <a href="html/coming-soon.html">Forum</a>
+                </div>
+                <button class="logout-btn" onclick="signOut()">Log Out</button>
+
+            </div>
+        
+            <div class="right-column-header">
+                <div class="header-left">
+                    Join a room...
+                </div>
+                <div class="header-right">
+                    <div id="roomsCount">room(s) available</div>
+                    <div id="usersCount">user(s) online</div>
+                </div>
+            </div>
+            
+            <!-- Search Bar, Search Button and Refresh Button -->
+            <div class="flex items-center justify-between p-4 utility">
+                <div class="search-container">
+                    <input type="text" id="searchRoomId" placeholder="Search by Room ID" class="p-2 border border-gray-400">
+                    <button id="searchRoomBtn" class="p-2 searchbtn text-white">Search</button>
+                </div>
+                <div class="button-container">
+                    <button id="refreshRoomsBtn" class="p-2 searchbtn text-white">Refresh Room List</button>
+                    <button id="settingsbtn" class="p-2 refreshbtn text-white">
+                        <img src="images/icons/settings.png" alt="Settings" style="width: 20px; height: 20px;">
+                    </button>
+                </div>
+            </div>
+            <!-- Your right column content, including settings modal -->
+            <div id="settingsModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2 class="text-2xl font-bold mb-4">Settings</h2>
+                    <div class="tabs">
+                        <div class="tab active" data-tab="color">Color</div>
+                        <div class="tab" data-tab="avatar">Avatar</div>
+                        <div class="tab" data-tab="theme">Theme</div>
+                        <div class="tab" data-tab="font">Font</div>
+                        <div class="tab" data-tab="settings">User info</div>
+                    </div>
+                    <div class="tab-content active" id="color">
+                        <div class="color-buttons">
+                            <span class="color-button" style="background-color: #FFFFFF;" data-color="white"></span>
+                            <span class="color-button" style="background-color: #FF9800;" data-color="orange"></span>
+                            <span class="color-button" style="background-color: #00FFFF;" data-color="blue"></span>
+                            <span class="color-button" style="background-color: #00FF00;" data-color="green"></span>
+                            <span class="color-button" style="background-color: #FF00FF;" data-color="pink"></span>
+                            <span class="color-button" style="background-color: #FFFF00;" data-color="yellow"></span>
+                        </div>
+                        <textarea class="preview-textarea" readonly>This is what your text color will look like.</textarea>
+                    </div>
+                    <div class="tab-content" id="avatar">
+                        <h3 class="avatar-selection-heading">Select the avatar you would like next to your name:</h3>
+                        <div class="avatar-buttons-container">
+                            <div class="avatar-buttons">
+                                <button class="avatar-button" data-avatar="avatar1"><img src="images/avatars/1.png" alt="Avatar 1"></button>
+                                <button class="avatar-button" data-avatar="avatar2"><img src="images/avatars/2.png" alt="Avatar 2"></button>
+                                <button class="avatar-button" data-avatar="avatar3"><img src="images/avatars/3.png" alt="Avatar 3"></button>
+                                <button class="avatar-button" data-avatar="avatar4"><img src="images/avatars/4.png" alt="Avatar 4"></button>
+                                <button class="avatar-button" data-avatar="avatar5"><img src="images/avatars/5.png" alt="Avatar 5"></button>
+                                <button class="avatar-button" data-avatar="avatar6"><img src="images/avatars/6.png" alt="Avatar 6"></button>
+                                <button class="avatar-button" data-avatar="avatar7"><img src="images/avatars/7.png" alt="Avatar 7"></button>
+                                <button class="avatar-button" data-avatar="avatar8"><img src="images/avatars/8.png" alt="Avatar 8"></button>
+                                <button class="avatar-button" data-avatar="avatar9"><img src="images/avatars/9.png" alt="Avatar 9"></button>
+                                <button class="avatar-button" data-avatar="avatar10"><img src="images/avatars/10.png" alt="Avatar 10"></button>
+                                <button class="avatar-button" data-avatar="avatar11"><img src="images/avatars/11.png" alt="Avatar 11"></button>
+                                <button class="avatar-button" data-avatar="avatar12"><img src="images/avatars/12.png" alt="Avatar 12"></button>
+                                <button class="avatar-button" data-avatar="avatar13"><img src="images/avatars/13.png" alt="Avatar 13"></button>
+                                <button class="avatar-button" data-avatar="avatar14"><img src="images/avatars/14.png" alt="Avatar 14"></button>
+                                <button class="avatar-button" data-avatar="avatar15"><img src="images/avatars/15.png" alt="Avatar 15"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content to" id="theme">
+                        <p>Coming Soon</p>
+                    </div>
+                    <div class="tab-content to" id="font">
+                        <p>Coming Soon</p>
+                    </div>
+                    <div class="tab-content to" id="settings">
+                        <p>Your userId is: <span id="userIdDisplay"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div id="roomList">
+                <!-- Rooms will be dynamically added here -->
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                Copyright 2024 Talkomatic.co | Revived by the community
+            </footer>
+        </div>
+    </div>
+
+    <script>
+
+function updateUserIdDisplay() {
+            const userIdDisplay = document.getElementById('userIdDisplay');
+            const userId = getCookie('userId');
+            if (userIdDisplay && userId) {
+                userIdDisplay.textContent = userId;
+            }
+        }
+        // Color map for color selection
+        const colorMap = {
+            'white': '#FFFFFF',
+            'orange': '#FF9800',
+            'blue': '#00FFFF',
+            'green': '#00FF00',
+            'pink': '#FF00FF',
+            'yellow': '#FFFF00'
+        };
+
+        // Avatar map for avatar selection
+        const avatarMap = {
+            'avatar1': 'images/avatars/1.png',
+            'avatar2': 'images/avatars/2.png',
+            'avatar3': 'images/avatars/3.png',
+            'avatar4': 'images/avatars/4.png',
+            'avatar5': 'images/avatars/5.png',
+            'avatar6': 'images/avatars/6.png',
+            'avatar7': 'images/avatars/7.png',
+            'avatar8': 'images/avatars/8.png',
+            'avatar9': 'images/avatars/9.png',
+            'avatar10': 'images/avatars/10.png',
+            'avatar11': 'images/avatars/11.png',
+            'avatar12': 'images/avatars/12.png',
+            'avatar13': 'images/avatars/13.png',
+            'avatar14': 'images/avatars/14.png',
+            'avatar15': 'images/avatars/15.png'
+        };
+    
+        // Get the modal and buttons
+        var modal = document.getElementById("settingsModal");
+        var settingsBtn = document.getElementById("settingsbtn");
+        var closeModalBtn = document.getElementsByClassName("close")[0];
+        var tabs = document.getElementsByClassName("tab");
+        var tabContents = document.getElementsByClassName("tab-content");
+        var selectedColor = getCookie('userColor') || "#FFFFFF";
+        var selectedAvatar = getCookie('userAvatar') || "avatar1";
+    
+        // Open the modal when the settings button is clicked
+        settingsBtn.onclick = function() {
+            modal.style.display = "block";
+            updateUserIdDisplay();
+        }
+
+        // Close the modal when the close button is clicked
+        closeModalBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+    
+        // Close the modal when the user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    
+        // Update active color button
+        function updateActiveColorButton() {
+            document.querySelectorAll('.color-button').forEach(button => {
+                if (button.getAttribute('data-color') === selectedColor) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Update active avatar button
+        function updateActiveAvatarButton() {
+            document.querySelectorAll('.avatar-button').forEach(button => {
+                if (button.getAttribute('data-avatar') === selectedAvatar) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        function checkBanStatus() {
+    const bannedCookie = getCookie('banned');
+    const banExpiration = getCookie('banExpiration');
+    
+    if (bannedCookie === 'true' && banExpiration) {
+        const currentTime = Date.now();
+        const expirationTime = parseInt(banExpiration);
+        
+        if (currentTime < expirationTime) {
+            window.location.href = 'html/removed.html';
+        } else {
+            // Ban has expired, clear the cookies
+            deleteCookie('banned');
+            deleteCookie('banExpiration');
+        }
+    }
+}
+
+    
+        // Switch between tabs
+        Array.from(tabs).forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                var tabId = this.getAttribute('data-tab');
+                Array.from(tabs).forEach(function(tab) {
+                    tab.classList.remove('active');
+                });
+                this.classList.add('active');
+                Array.from(tabContents).forEach(function(content) {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    
+        // Color selection
+        Array.from(document.getElementsByClassName('color-button')).forEach(function(button) {
+            button.addEventListener('click', function() {
+                selectedColor = this.getAttribute('data-color');
+                document.querySelector('.preview-textarea').style.color = colorMap[selectedColor];
+                setCookie('userColor', selectedColor, 30); // Store the color name in a cookie
+                toastr.success('Text color changed');
+                updateActiveColorButton();
+            });
+        });
+
+        // Avatar selection
+        Array.from(document.getElementsByClassName('avatar-button')).forEach(function(button) {
+            button.addEventListener('click', function() {
+                selectedAvatar = this.getAttribute('data-avatar');
+                setCookie('userAvatar', selectedAvatar, 30); // Store the avatar in a cookie
+                updateActiveAvatarButton();
+                toastr.success('Avatar changed');
+            });
+        });
+    
+        // Initialize color and mod mode on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkBanStatus(); // Check ban status first
+            document.querySelector('.preview-textarea').style.color = selectedColor;
+            updateActiveColorButton();
+            updateActiveAvatarButton();
+    
+            // Check mod mode on page load
+            if (getCookie('modMode') === 'true') {
+                toastr.success('Mod mode is already activated');
+            }
+        });
+    
+        // Set a cookie
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+    
+        // Get a cookie
+        function getCookie(name) {
+            let cookieArray = document.cookie.split(';');
+            for (let i = 0; i < cookieArray.length; i++) {
+                let cookiePair = cookieArray[i].split('=');
+                if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+    
+        function deleteCookie(name) {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+
+        // Check and activate mod mode
+        function checkModMode() {
+            const usernameInput = document.getElementById('name');
+            const locationInput = document.getElementById('location');
+            if (usernameInput) {
+                const code = usernameInput.value;
+                fetch('/verify-mod-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        setCookie('modMode', 'true', 7); // Save mod mode in cookie for 7 days
+                        usernameInput.value = '<';
+                        locationInput.value = 'dev>';
+                        toastr.success('Mod mode activated');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toastr.error('An error occurred while verifying the code');
+                });
+            }
+        }
+    
+        // Event listener for the change button
+        const changeButton = document.querySelector('.button-style');
+        if (changeButton) {
+            changeButton.addEventListener('click', checkModMode);
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+
+                // Request permission for push notifications
+                Notification.requestPermission(status => {
+                    console.log('Notification permission status:', status);
+                    if (status === 'granted') {
+                    subscribeUserToPush(registration);
+                    }
+                });
+                }, err => {
+                console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+            }
+
+            function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+            }
+
+            function subscribeUserToPush(registration) {
+            const applicationServerKey = urlBase64ToUint8Array('BNReJ25f7VwJDUSVelEsoti78Tv1FtWUsDNXBRl4cAA9YEnFLS7ezpN9fXJbjH_-XmX7asrjkfWwk4XMnGHkG08');  // Private ke: cpQORbewEjhH1nDOJG9do-C6-ja_Ku2j8XYaxCIBPHw
+            registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: applicationServerKey
+            })
+            .then(subscription => {
+                console.log('User is subscribed:', subscription);
+                // Send the subscription to your server
+            })
+            .catch(err => {
+                console.log('Failed to subscribe the user: ', err);
+            });
+            }
+    </script>
+</body>
+</html>
