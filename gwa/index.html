@@ -1,10 +1,124 @@
 <!DOCTYPE html>
+<html>
 <head>
     <title>GWA Feed</title>
+    <style>
+        body {
+            background: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top {
+            width: 100%;
+            height: 20px;
+            background: #444;
+        }
+
+        img {
+            max-width: 1024px;
+            display: block;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #rss-container {
+            width: 1024px;
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        .rss-item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .rss-item:last-child {
+            border-bottom: none;
+        }
+
+        .rss-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .rss-desc {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .rss-date {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+    </style>
 </head>
 <body>
+    <div class="top"></div>
+
     <img src="banner.gif" alt="Banner">
-    <br/>
+
     <h1>GWA RSS</h1>
-    <a href="https://www.netweather.tv/" target="_blank"><img border="0" src="https://www.netweather.tv/4web2/netweather4webi.pl?lat=52.75;lon=-2;title=Great Wyrley;template=6" alt="Weather" /></a>
+
+    <a href="https://www.netweather.tv/" target="_blank">
+        <img border="0" src="https://www.netweather.tv/4web2/netweather4webi.pl?lat=52.75;lon=-2;title=Great Wyrley;template=6" alt="Weather" />
+    </a>
+
+    <div id="rss-container">Loading RSS feed…</div>
+
+    <script>
+        // Fetch RSS feed from rss.xml
+        fetch("https://caelan.bowen.cx/rss/rss.xml")
+            .then(response => response.text())
+            .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+            .then(data => {
+                let container = document.getElementById("rss-container");
+                container.innerHTML = ""; // clear loading text
+
+                let items = data.querySelectorAll("item");
+
+                if (items.length === 0) {
+                    container.innerHTML = "<p>No RSS items found.</p>";
+                    return;
+                }
+
+                items.forEach(item => {
+                    let title = item.querySelector("title")?.textContent || "No title";
+                    let desc = item.querySelector("description")?.textContent || "";
+                    let pubDate = item.querySelector("pubDate")?.textContent || "";
+
+                    let div = document.createElement("div");
+                    div.className = "rss-item";
+
+                    div.innerHTML = `
+                        <div class="rss-title">${title}</div>
+                        <div class="rss-desc">${desc}</div>
+                        <div class="rss-date">${pubDate}</div>
+                    `;
+
+                    container.appendChild(div);
+                });
+            })
+            .catch(err => {
+                document.getElementById("rss-container").innerHTML =
+                    "<p>Error loading RSS feed.</p>";
+                console.error(err);
+            });
+    </script>
+
 </body>
+</html>
