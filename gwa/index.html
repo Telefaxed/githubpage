@@ -93,8 +93,8 @@
             <img src="/web/gwa/rss.gif">
         </a>
     </div>
-    <script>
-        // Fetch RSS feed from rss.xml
+<script>
+    function loadRSS() {
         fetch("https://caelan.bowen.cx/rss/feed.php")
             .then(response => response.text())
             .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
@@ -131,7 +131,14 @@
                     "<p>Error loading RSS feed.</p>";
                 console.error(err);
             });
-    </script>
+    }
+
+    // Load immediately on page load
+    loadRSS();
+
+    // Refresh every 30 seconds (adjust as needed)
+    setInterval(loadRSS, 30000);
+</script>
 
 </body>
 </html>
