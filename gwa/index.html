@@ -30,7 +30,7 @@
         }
 
         #rss-container {
-            width: 1000px;
+            width:80%;
             background: white;
             padding: 20px;
             margin-top: 20px;
@@ -38,6 +38,12 @@
             padding-right: 12px;
             border-radius: 6px;
             box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        .side {
+            width: 20%;
+            text-align: center;
+            margin: auto;
         }
 
         .rss-item {
@@ -77,12 +83,12 @@
 
     <h1>GWA RSS</h1>
 
-    <a href="https://www.netweather.tv/" target="_blank">
-        <img border="0" src="https://www.netweather.tv/4web2/netweather4webi.pl?lat=52.75;lon=-2;title=Great Wyrley;template=6" alt="Weather" />
-    </a>
-
     <div id="rss-container">Loading RSS feed…</div>
-
+    <div class="side">
+        <a href="https://www.netweather.tv/" target="_blank">
+            <img border="0" src="https://www.netweather.tv/4web2/netweather4webi.pl?lat=52.75;lon=-2;title=Great Wyrley;template=6" alt="Weather" />
+        </a>
+    </div>
     <script>
         // Fetch RSS feed from rss.xml
         fetch("https://caelan.bowen.cx/rss/feed.php")
