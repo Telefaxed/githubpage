@@ -82,7 +82,7 @@
 
     <script>
         // Fetch RSS feed from rss.xml
-        fetch("https://caelan.bowen.cx/rss/rss.xml")
+        fetch("https://caelan.bowen.cx/rss/feed.php")
             .then(response => response.text())
             .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
             .then(data => {
